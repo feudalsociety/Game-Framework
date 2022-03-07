@@ -12,6 +12,7 @@ public class InputManager
     {
         if (Input.anyKey == false) return;
 
+        // 누가 event를 받았는지 확인 할 수 있다.
         if(KeyAction != null) KeyAction.Invoke();
     }
 }
