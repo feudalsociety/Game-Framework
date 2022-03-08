@@ -7,75 +7,88 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float _speed = 10.0f;
 
-    bool _moveToDest = false;
     Vector3 _destPos;
 
     // Start is called before the first frame update
     void Start()
     {
-        // 두번 넣으면 두번 호출됨. 혹시라도 구독 신청했으면 
-        Managers.Input.KeyAction -= OnKeyBoard;
-        // 구독 신청
-        Managers.Input.KeyAction += OnKeyBoard;
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
     }
 
-    float _yAngle = 0.0f;
+    float wait_run_ratio = 0.0f;
+
+    public enum PlayerState
+    { 
+        Die,
+        Moving,
+        Idle,
+    }
+
+    PlayerState _state = PlayerState.Idle;
+
+    void UpdateDie()
+    {
+
+    }
+
+    void UpdateMoving()
+    {
+        // dest 방향으로 이동
+        Vector3 dir = _destPos - transform.position;
+        if (dir.magnitude < 0.0001f)
+        {
+            _state = PlayerState.Idle;
+        }
+        else
+        {
+            // 이동, 속도가 너무 빨라서 목표지점을 넘어서는 것을 방지
+            float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0.0f, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
+            // transform.LookAt(_destPos);
+        }
+
+        // 애니매이션
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10.0f * Time.deltaTime);
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        anim.Play("WAIT_RUN");
+    }
+
+    void UpdateIdle()
+    {
+        // 애니매이션
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10.0f * Time.deltaTime);
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        anim.Play("WAIT_RUN");
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (_moveToDest) 
-        {
-            // dest 방향으로 이동
-            Vector3 dir = _destPos - transform.position;
-            if(dir.magnitude < 0.0001f)
-            {
-                _moveToDest = false;
-            }
-            else
-            {
-                // 이동, 속도가 너무 빨라서 목표지점을 넘어서는 것을 방지
-                float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0.0f, dir.magnitude);
-                transform.position += dir.normalized * moveDist;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
-                // transform.LookAt(_destPos);
-            }
+        switch (_state)
+        { 
+            case PlayerState.Die:
+                UpdateDie();
+                break;
+            case PlayerState.Moving:
+                UpdateMoving();
+                break;
+            case PlayerState.Idle:
+                UpdateIdle();
+                break;
         }
     }
 
-    void OnKeyBoard()
-    {
-        _yAngle += Time.deltaTime * _speed;
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), 0.1f);
-            transform.position += Vector3.forward * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), 0.1f);
-            transform.position += Vector3.back * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), 0.1f);
-            transform.position += Vector3.left * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), 0.1f);
-            transform.position += Vector3.right * Time.deltaTime * _speed;
-        }
-
-        _moveToDest = false;
-    }
-
+    // evt로 input 상태가 넘어감
     void OnMouseClicked(Define.MouseEvent evt)
     {
-        if (evt != Define.MouseEvent.Click) return;
+        if (_state == PlayerState.Die) return;
+
+        // 주석 처리하면 마우스 누른 상태에서도 이동
+        // if (evt != Define.MouseEvent.Click) return;
 
         // 더 사용하기 쉬운 버전
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -85,7 +98,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
         {
             _destPos = hit.point;
-            _moveToDest = true;
+            _state = PlayerState.Moving;
             // Debug.Log($"Raycast Camera @ {hit.collider.gameObject.name}");
         }
     }
