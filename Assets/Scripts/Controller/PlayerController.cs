@@ -16,8 +16,6 @@ public class PlayerController : MonoBehaviour
         Managers.Input.MouseAction += OnMouseClicked;
     }
 
-    float wait_run_ratio = 0.0f;
-
     public enum PlayerState
     { 
         Die,
@@ -50,24 +48,27 @@ public class PlayerController : MonoBehaviour
         }
 
         // 애니매이션
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10.0f * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
-        anim.SetFloat("wait_run_ratio", wait_run_ratio);
-        anim.Play("WAIT_RUN");
+        // 현재 게임상태에 대한 정보를 넘겨준다.
+        anim.SetFloat("speed", _speed);
     }
 
     void UpdateIdle()
     {
         // 애니매이션
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10.0f * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
-        anim.SetFloat("wait_run_ratio", wait_run_ratio);
-        anim.Play("WAIT_RUN");
+        anim.SetFloat("speed", 0);
+    }
+
+    void OnRunEvent(int a)
+    {
+        Debug.Log($"뚜벅 뚜벅 {a}");
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 단점 동시에 두가지 상태를 가질 수는 없고 한번에 하나씩의 상태만 갖는다고 가정하면
         switch (_state)
         { 
             case PlayerState.Die:

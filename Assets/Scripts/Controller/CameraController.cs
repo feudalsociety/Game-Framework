@@ -27,11 +27,11 @@ public class CameraController : MonoBehaviour
             if (Physics.Raycast(_player.transform.position, _detla, out hit, _detla.magnitude, LayerMask.GetMask("Wall")))
             {
                 float dist = (hit.point - _player.transform.position).magnitude * 0.8f;
-                transform.position = _player.transform.position + _detla.normalized * dist;
+                transform.position = _player.transform.position + Vector3.forward + _detla.normalized * dist;
             }
             else 
             {
-                transform.position = _player.transform.position + _detla;
+                transform.position = _player.transform.position + Vector3.forward + _detla;
             }
             transform.LookAt(_player.transform);
         }
