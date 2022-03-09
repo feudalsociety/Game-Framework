@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager
 {
@@ -12,6 +13,8 @@ public class InputManager
 
     public void OnUpdate()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         // 누가 event를 받았는지 확인 할 수 있다. 마우스를 때는것도 상태 변화로 인식할 수 있으므로
         // anyKey만 따로 검사하지 않는다.
         // if (Input.anyKey) return; // any key or mousebutton held down?

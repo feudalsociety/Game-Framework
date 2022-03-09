@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     {
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+
+        // Managers.Resource.Instantiate("UI/UI_Button");
     }
 
     public enum PlayerState
@@ -58,12 +60,7 @@ public class PlayerController : MonoBehaviour
         // ¾Ö´Ï¸ÅÀÌ¼Ç
         Animator anim = GetComponent<Animator>();
         anim.SetFloat("speed", 0);
-    }
-
-    void OnRunEvent(int a)
-    {
-        Debug.Log($"¶Ñ¹÷ ¶Ñ¹÷ {a}");
-    }
+    } 
 
     // Update is called once per frame
     void Update()
