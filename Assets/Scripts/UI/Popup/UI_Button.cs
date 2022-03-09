@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Button : UI_Base
+public class UI_Button : UI_Popup
 {
     // UI 목록을 여기서 추가
     enum Buttons
@@ -32,12 +32,19 @@ public class UI_Button : UI_Base
 
     private void Start()
     {
+        Init();
+    }
+
+    public override void Init()
+    {
+        base.Init();
+
         // reflection을 이용하여 enum을 넘겨준다.
         // 이름과 <T> component를 갖고 있는 object를 찾는 것이 목표
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
         // findchild에서 gameobject는 component가 아니므로 찾을 수 없다.
-        Bind<GameObject>(typeof(GameObjects)); 
+        Bind<GameObject>(typeof(GameObjects));
         Bind<Image>(typeof(Images));
 
         // default type = Define.UIEvent.Click

@@ -47,7 +47,6 @@ public class UI_Base : MonoBehaviour
 
     public static void AddUIEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)   
     {
-
         UI_EventHandler evt = Util.GetOrAddComponent<UI_EventHandler>(go);
 
         switch (type)
@@ -62,7 +61,6 @@ public class UI_Base : MonoBehaviour
                 break;
         }
 
-        // UI는 rectTransform인데 transform을 변경하는 이유, rectTransform은 transform을 상속받고 있기 때문이다.
         evt.OnDragHandler += ((PointerEventData data) => { evt.gameObject.transform.position = data.position; });
     }
 }

@@ -9,13 +9,16 @@ public class PlayerController : MonoBehaviour
 
     Vector3 _destPos;
 
-    // Start is called before the first frame update
     void Start()
     {
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
 
-        // Managers.Resource.Instantiate("UI/UI_Button");
+        Managers.UI.ShowPopupUI<UI_Button>();
+
+        // string¿∫ ±ª¿Ã ¿‘∑¬æ»«ÿµµµ 
+        //UI_Button ui = Managers.UI.ShowPopupUI<UI_Button>("UI_Button");
+        // Managers.UI.ClosePopupUI(ui);
     }
 
     public enum PlayerState
