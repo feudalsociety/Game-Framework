@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class UI_Popup : UI_Base
 {
-    // start가 아닌 init함수에서 호출
-    public virtual void Init()
+    // start가 아닌 init함수
+    public override void Init()
     {
         Managers.UI.SetCanvus(gameObject, true);
     }

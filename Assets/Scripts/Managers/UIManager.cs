@@ -43,11 +43,23 @@ public class UIManager
         }
     }
 
+    public T MakeSubItem<T>(Transform parent = null, string name = null) where T : UI_Base
+    {
+        if (string.IsNullOrEmpty(name)) name = typeof(T).Name;
+
+        GameObject go = Managers.Resource.Instantiate($"UI/SubItem/{name}");
+
+        if (parent != null)
+            go.transform.SetParent(parent);
+
+        return go.GetOrAddComponent<T>();
+    }
+
     public T ShowSceneUI<T>(string name = null) where T : UI_Scene
     {
         if (string.IsNullOrEmpty(name)) name = typeof(T).Name;
 
-        GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
+        GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
         // 해당 component가 없으면 추가후 get
         T sceneUI = Util.GetOrAddComponent<T>(go);
         _sceneUI = sceneUI;

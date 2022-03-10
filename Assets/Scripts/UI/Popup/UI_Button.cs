@@ -47,12 +47,13 @@ public class UI_Button : UI_Popup
         Bind<GameObject>(typeof(GameObjects));
         Bind<Image>(typeof(Images));
 
+        // Event 추가
         // default type = Define.UIEvent.Click
         GetButton((int)Buttons.PointButton).gameObject.AddUIEvent(OnButtonClicked);
 
         // 이경우는 callback에 go가 들어가므로 2단계로 나눔
         GameObject go = GetImage((int)Images.ItemIcon).gameObject;
-        AddUIEvent(go, (PointerEventData data) => { go.transform.position = data.position; }, Define.UIEvent.Drag);
+        BindEvent(go, (PointerEventData data) => { go.transform.position = data.position; }, Define.UIEvent.Drag);
     }
 
     int _score = 0;

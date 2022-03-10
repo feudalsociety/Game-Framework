@@ -20,7 +20,12 @@ public class ResourceManager
         }
 
         // Object를 붙여준 이유는 재귀적 호출을 막기위해
-        return Object.Instantiate(prefab, parent);
+        GameObject go = Object.Instantiate(prefab, parent);
+        int index = go.name.IndexOf("(Clone)");
+        if(index > 0)
+            go.name = go.name.Substring(0, index);
+
+        return go;
     }
 
     public void Destroy(GameObject go)
