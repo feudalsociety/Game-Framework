@@ -42,5 +42,16 @@ public class Managers : MonoBehaviour
 
         DontDestroyOnLoad(go);
         s_instance = go.GetComponent<Managers>();
+        // Instance를 하용하면 무한 루프
+        s_instance._sound.Init();
+    }
+
+    // Scene 이동할 때 날려야하는것들을 여기서 다 날린다.
+    public static void Clear()
+    {
+        Sound.Clear();
+        Input.Clear();
+        Scene.Clear();
+        UI.Clear();
     }
 }
