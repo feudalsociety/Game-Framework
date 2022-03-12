@@ -7,11 +7,13 @@ public abstract class BaseScene : MonoBehaviour
 {
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unkown;
 
-    void Start()
+    private void Awake()
     {
-        
+        Init();
     }
 
+    // EventSystem이 없으면 생성
+    // Managers를 참조하면서 Managers 자동 생성
     protected virtual void Init()
     {
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
